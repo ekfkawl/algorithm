@@ -17,7 +17,7 @@ public class Main {
             for (int i = 0; i < 3; i++) {
                 String line = br.readLine().replace(" ", "");
                 for (int j = 0; j < 3; j++) {
-                    if (line.charAt(j) == 'T') { // 공백을 고려해 인덱스 조정
+                    if (line.charAt(j) == 'T') {
                         state |= (1 << (i * 3 + j));
                     }
                 }
@@ -34,7 +34,7 @@ public class Main {
             distance.put(state, 0);
 
             boolean solved = false;
-            while (!queue.isEmpty() && !solved) {
+            while (!queue.isEmpty()) {
                 int currentState = queue.poll();
                 if (currentState == 0 || currentState == 0b111111111) {
                     System.out.println(distance.get(currentState));
