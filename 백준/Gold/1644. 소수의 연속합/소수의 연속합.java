@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -38,16 +36,15 @@ public class Main {
         int cur = 0;
         int count = 0;
 
-        while (r <= primes.size()) {
+        while (true) {
             if (cur < N) {
                 if (r == primes.size()) {
                     break;
                 }
-                cur += primes.get(r);
-                r++;
+                
+                cur += primes.get(r++);
             }else {
-                cur -= primes.get(l);
-                l++;
+                cur -= primes.get(l++);
             }
 
             if (cur == N) {
