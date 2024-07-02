@@ -14,7 +14,6 @@ public class Main {
 
     static boolean[] visited;
 
-    static Vertex res = new Vertex(0, 0);
 
     public static void main(String[] args) throws IOException {
 
@@ -37,28 +36,31 @@ public class Main {
         }
 
         visited = new boolean[N+1];
-        dfs(new Vertex(1, 0), 0);
+        var a = dfs(new Vertex(1, 0), 0);
 
         visited = new boolean[N+1];
-        res = new Vertex(res.node, 0);
-        dfs(new Vertex(res.node, 0), 0);
+        var b = dfs(new Vertex(a.node, 0), 0);
+        System.out.println(b.weight);
 
-        System.out.println(res.weight);
     }
 
-    static void dfs(Vertex vertex, int totalWeight) {
-        if (totalWeight > res.weight) {
-            res = new Vertex(vertex.node, totalWeight);
-        }
-
+    static Vertex dfs(Vertex vertex, int totalWeight) {
         visited[vertex.node] = true;
+
+        Vertex res = new Vertex(vertex.node, totalWeight);
 
         List<Vertex> vertices = graph.get(vertex.node);
         for (Vertex v : vertices) {
             if (!visited[v.node]) {
-                dfs(v, totalWeight + v.weight);
+                Vertex next = dfs(v, totalWeight + v.weight);
+
+                if (next.weight > res.weight) {
+                    res = next;
+                }
             }
         }
+
+        return res;
     }
 
     static class Vertex {
