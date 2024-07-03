@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,8 +10,6 @@ public class Main {
     static int N;
 
     static List<List<Vertex>> graph = new ArrayList<>();
-
-    static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
 
@@ -38,17 +35,18 @@ public class Main {
             }
 
         }
-
-        visited = new boolean[N+1];
         var vertex = dfs(new Vertex(1, 0));
-
-        visited = new boolean[N+1];
         int weight = dfs(new Vertex(vertex.node, 0)).weight;
 
         System.out.println(weight);
     }
 
     static Vertex dfs(Vertex vertex) {
+        boolean[] visited = new boolean[N+1];
+        return dfs(vertex, visited);
+    }
+    
+    static Vertex dfs(Vertex vertex, boolean[] visited) {
         visited[vertex.node] = true;
 
         Vertex res = vertex;
@@ -56,7 +54,7 @@ public class Main {
         List<Vertex> vertices = graph.get(vertex.node);
         for (Vertex v : vertices) {
             if (!visited[v.node]) {
-                Vertex next = dfs(new Vertex(v.node, vertex.weight + v.weight));
+                Vertex next = dfs(new Vertex(v.node, vertex.weight + v.weight), visited);
 
                 if (next.weight > res.weight) {
                     res = next;
