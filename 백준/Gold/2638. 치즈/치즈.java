@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -88,35 +87,32 @@ public class Main {
     static boolean melt() {
         boolean isMelted = false;
 
-        boolean[][] toMelt = new boolean[N][M];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
                 if (graph[i][j] == 1) {
+
                     int airCount = 0;
                     for (int k = 0; k < 4; k++) {
                         int ny = i + dy[k];
                         int nx = j + dx[k];
 
-                        if (ny >= 0 && ny < N && nx >= 0 && nx < M && visited[ny][nx]) {
-                            airCount++;
+                        if (!(ny >= 0 && ny < N && nx >= 0 && nx < M)) {
+                            continue;
+                        }
+
+                        if (visited[ny][nx]) {
+                            if (++airCount >= 2) {
+                                graph[i][j] = 0;
+                                isMelted = true;
+                                break;
+                            }
                         }
                     }
-                    if (airCount >= 2) {
-                        toMelt[i][j] = true;
-                        isMelted = true;
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (toMelt[i][j]) {
-                    graph[i][j] = 0;
                 }
             }
         }
 
         return isMelted;
     }
+
 }
