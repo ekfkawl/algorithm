@@ -52,8 +52,7 @@ public class Solution {
         if (depth == N + 1) {
             StringBuilder sb = new StringBuilder();
             for (Ticket ticket : path) {
-                sb.append(" ");
-                sb.append(ticket.airplane);
+                sb.append(" ").append(ticket.airplane);
             }
             results.add(sb.toString());
             return;
