@@ -56,16 +56,14 @@ public class Solution {
         }
 
         private void findByPrefix(TrieNode node, List<String> res) {
-            if (node == null) {
-                return;
-            }
-
             if (node.eof || node.key != null) {
                 res.add(node.key);
             }
 
             for (TrieNode child : node.child) {
-                findByPrefix(child, res);
+                if (child != null) {
+                    findByPrefix(child, res);
+                }
             }
         }
     }
