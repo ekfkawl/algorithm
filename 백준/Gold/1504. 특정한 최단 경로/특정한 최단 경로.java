@@ -1,14 +1,32 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
-public class Main  {
+public class Main {
 
     static int N;
     static int E;
     static int[] Targets;
     static int[][] dist;
+    static Map<Integer, List<Vertex>> graph = new HashMap<>();
     static int MinWeight = Integer.MAX_VALUE;
     static int INF = Integer.MAX_VALUE / 2;
+
+    static class Vertex implements Comparable<Vertex> {
+        int node;
+        int weight;
+
+        public Vertex(int node, int weight) {
+            this.node = node;
+            this.weight = weight;
+        }
+
+        @Override
+        public int compareTo(Vertex o) {
+            return Integer.compare(this.weight, o.weight);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,10 +36,6 @@ public class Main  {
         E = s[1];
 
         dist = new int[N+1][N+1];
-        for (int i = 0; i <= N; i++) {
-            Arrays.fill(dist[i], INF);
-            dist[i][i] = 0;
-        }
 
         for (int i = 0; i < E; i++) {
             s = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
@@ -29,22 +43,39 @@ public class Main  {
             int b = s[1];
             int w = s[2];
 
-            dist[a][b] = Math.min(dist[a][b], w);
-            dist[b][a] = Math.min(dist[b][a], w);
+            graph.computeIfAbsent(a, val -> new ArrayList<>()).add(new Vertex(b, w));
+            graph.computeIfAbsent(b, val -> new ArrayList<>()).add(new Vertex(a, w));
         }
 
         Targets = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 
-        for (int k = 1; k <= N; k++) {
-            for (int i = 1; i <= N; i++) {
-                for (int j = 1; j <= N; j++) {
-                    dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
-                }
+        perm(0, Targets, new boolean[Targets.length], new int[Targets.length]);
+        System.out.println(MinWeight == INF ? -1 : MinWeight);
+    }
+
+    static int[] dijkstra(int start) {
+        int[] dist = new int[N+1];
+        Arrays.fill(dist, INF);
+
+        Queue<Vertex> queue = new PriorityQueue<>();
+        queue.add(new Vertex(start, 0));
+        dist[start] = 0;
+
+        while (!queue.isEmpty()) {
+            Vertex cur = queue.poll();
+
+            if (cur.weight > dist[cur.node]) {
+                continue;
+            }
+
+            for (Vertex next : graph.getOrDefault(cur.node, new ArrayList<>())) {
+                int w = cur.weight + next.weight;
+                dist[next.node] = Math.min(dist[next.node], w);
+                queue.add(new Vertex(next.node, w));
             }
         }
 
-        perm(0, Targets, new boolean[Targets.length], new int[Targets.length]);
-        System.out.println(MinWeight == INF ? -1 : MinWeight);
+        return dist;
     }
 
     static int calcWeight(int[] arr) {
@@ -52,6 +83,7 @@ public class Main  {
         int weight = 0;
 
         for (int next: arr) {
+            dist[prev] = dijkstra(prev);
             if (dist[prev][next] >= INF) {
                 return INF;
             }
@@ -59,6 +91,7 @@ public class Main  {
             prev = next;
         }
 
+        dist[prev] = dijkstra(prev);
         if (dist[prev][N] >= INF) {
             return INF;
         }
