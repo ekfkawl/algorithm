@@ -70,8 +70,10 @@ public class Main {
 
             for (Vertex next : graph.getOrDefault(cur.node, new ArrayList<>())) {
                 int w = cur.weight + next.weight;
-                dist[next.node] = Math.min(dist[next.node], w);
-                queue.add(new Vertex(next.node, w));
+                if (dist[next.node] > w) {
+                    dist[next.node] = w;
+                    queue.add(new Vertex(next.node, w));
+                }
             }
         }
 
